@@ -1,5 +1,24 @@
 {
   "dependencies": {
+    "node-color-log": "^10.0.2",
     "venom-bot": "^4.3.7"
-  }
+  },
+  "name": "mountyhall-wa-bot",
+  "description": "MountyHall WhatsApp Bot",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lordslair/mountyhall-wa-bot.git"
+  },
+  "author": "@Lordslair",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lordslair/mountyhall-wa-bot/issues"
+  },
+  "homepage": "https://github.com/lordslair/mountyhall-wa-bot#readme",
+  "devDependencies": {}
 }
