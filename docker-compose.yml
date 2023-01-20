@@ -1,0 +1,7 @@
+services:
+  discord:
+    build: .
+    container_name: mh-wa-bot
+    image: mh-wa-bot
+    environment:
+      SCIZ_TOKEN: '<SCIZ_TOKEN>'
