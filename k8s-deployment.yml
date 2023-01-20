@@ -12,6 +12,7 @@ metadata:
   name: mh-wa-bot
 type: Opaque
 stringData:
+  LOG_LEVEL: 'info'
   SCIZ_TOKEN: '<SCIZ_TOKEN>'
 ---
 

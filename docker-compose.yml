@@ -4,4 +4,5 @@ services:
     container_name: mh-wa-bot
     image: mh-wa-bot
     environment:
+      LOG_LEVEL: 'info'
       SCIZ_TOKEN: '<SCIZ_TOKEN>'
