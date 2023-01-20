@@ -134,3 +134,7 @@ dist
 #
 # Stores Venom WA issued tokens
 tokens/
+# Ignored files (Production specific)
+*.production.yml
+# Ignored files (Development specific)
+*.development.yml
