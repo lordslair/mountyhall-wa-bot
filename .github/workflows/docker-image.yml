@@ -1,4 +1,4 @@
-name: Docker Image CI (Discord)
+name: Docker Image CI (MH-WA-Bot)
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ env.DOCKER_USERNAME }}
+        username: ${{ vars.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Docker Metadata action
       id: meta
