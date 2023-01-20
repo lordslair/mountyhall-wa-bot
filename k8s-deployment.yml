@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+
+metadata:
+  name: mh-wa-bot
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: mh-wa-bot
+  name: mh-wa-bot
+type: Opaque
+stringData:
+  SCIZ_TOKEN: '<SCIZ_TOKEN>'
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mh-wa-bot
+  namespace: mh-wa-bot
+  labels:
+    app: mh-wa-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mh-wa-bot
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mh-wa-bot
+    spec:
+      restartPolicy: Always
+
+      containers:
+      - name: mh-wa-bot
+        image: lordslair/mh-wa-bot:latest
+        env:
+        - name: SCIZ_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: mh-wa-bot
+              key: SCIZ_TOKEN

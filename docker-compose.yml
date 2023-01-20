@@ -1,5 +1,5 @@
 services:
-  discord:
+  mh-wa-bot:
     build: .
     container_name: mh-wa-bot
     image: mh-wa-bot
