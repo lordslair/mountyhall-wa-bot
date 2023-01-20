@@ -1,12 +1,23 @@
 const venom = require('venom-bot');
 const https = require('https');
-const logger = require('node-color-log');
+const winston = require('winston');
+const { combine, timestamp, printf, colorize } = winston.format;
 
-logger.setLevel("debug"); // it can be any log level.
+const logger = winston.createLogger({
+    level: process.env.LOG_LEVEL || 'info',
+    format: combine(
+      colorize({ all: true }),
+      timestamp({
+        format: 'YYYY-MM-DD hh:mm:ss',
+      }),
+      printf((info) => `${info.timestamp} | ${info.level} : ${info.message}`)
+    ),
+    transports: [new winston.transports.Console()],
+  });
 
 if ( process.env.SCIZ_TOKEN ) {
   SCIZ_TOKEN = process.env.SCIZ_TOKEN
-  logger.debug("SCIZ_TOKEN ENV var loaded");
+  logger.verbose("SCIZ_TOKEN ENV var loaded");
 }
 else {
   logger.error("SCIZ_TOKEN ENV var is not set");
@@ -33,7 +44,7 @@ function start(client) {
       if (regexp_match) {
   
         troll_id = parseInt(regexp_match[1], 10)
-        logger.info("RegExp found: "+troll_id);
+        logger.debug("RegExp found: "+troll_id);
         var req = https.request({
           'method': 'POST',
           'hostname': 'www.sciz.fr',
@@ -56,7 +67,7 @@ function start(client) {
                   for(var troll in json.trolls){
                     if (json.trolls[troll].id === troll_id) {
                       troll_header = `[${json.trolls[troll].id}] ${json.trolls[troll].nom}`
-                      logger.info("JSON found: "+troll_header);
+                      logger.debug("JSON found: "+troll_header);
                       troll_data = `*${troll_header}*\n` +
                       `*PVs*: ${json.trolls[troll].pdv}/${json.trolls[troll].pdv_max}\n` +
                       `*DLA*: ${json.trolls[troll].dla}\n` +
@@ -65,14 +76,14 @@ function start(client) {
                       client
                         .sendText(message.from, troll_data)
                         .then((result) => {
-                          logger.info('Result: ', result); //return object success
+                          logger.silly('Result: ', result); //return object success
                         })
                         .catch((erro) => {
                           logger.error('Error when sending: ', erro); //return object error
                         });
                     }
                   }
-                  logger.debug(json)
+                  logger.silly(json)
                   // do something with JSON
               } catch (error) {
                 logger.error(error.message);
