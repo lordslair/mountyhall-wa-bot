@@ -38,6 +38,12 @@ venom
 
 function start(client) {
   client.onMessage((message) => {
+    /* Here is it a watchdog to properly close the client remotely.
+    This DOES NOT terminate the process
+    TODO: Do better than this. */
+    if (message.body.startsWith("!!shutdown")) {
+      client.close();
+    }
     // Here we are trying to catch TROLL requests //
     if (message.body.startsWith("?troll")) {
       regexp_match = message.body.match(/^[?]troll (\d+)$/)
