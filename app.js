@@ -51,7 +51,7 @@ function start(client) {
         });
       client.close();
     }
-
+    // Here we are trying to catch TROLL requests //
     if (message.body.startsWith("?troll")) {
       // Here we are trying to catch TROLL requests //
       regexp_match = message.body.match(/^[?]troll (\d+)$/)
