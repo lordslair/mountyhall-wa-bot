@@ -38,6 +38,10 @@ venom
 
 function start(client) {
   client.onMessage((message) => {
+    // Here is it a watchdog to properly close the client remotely //
+    if (message.body.startsWith("!!shutdown")) {
+      client.close();
+    }
     // Here we are trying to catch TROLL requests //
     if (message.body.startsWith("?troll")) {
       regexp_match = message.body.match(/^[?]troll (\d+)$/)
@@ -71,7 +75,7 @@ function start(client) {
                       troll_data = `*${troll_header}*\n` +
                       `*PVs*: ${json.trolls[troll].pdv}/${json.trolls[troll].pdv_max}\n` +
                       `*DLA*: ${json.trolls[troll].dla}\n` +
-                      `*POS*: X=${json.trolls[troll].pos_x} | Y=${json.trolls[troll].pos_y} | N=${json.trolls[troll].pos_n}\n`;
+                      `*POS*: X=${json.trolls[troll].pos_x} | Y=${json.trolls[troll].pos_y} | N=${json.trolls[troll].pos_n}`;
 
                       client
                         .sendText(message.from, troll_data)
