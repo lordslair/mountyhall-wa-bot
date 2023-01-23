@@ -31,7 +31,7 @@ WORKDIR /home/node/app
 ENV TZ=Europe/Paris
 COPY --chown=node:node app.js           ./
 COPY --chown=node:node package*.json    ./
-COPY --from=BASEIMAGE /src/node_modules ./node_modules
+COPY --from=BASEIMAGE --chown=node:node /src/node_modules ./node_modules
 
 USER node
 
