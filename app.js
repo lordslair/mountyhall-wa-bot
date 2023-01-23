@@ -40,15 +40,25 @@ function start(client) {
   client.onMessage((message) => {
     // Here is it a watchdog to properly close the client remotely //
     if (message.body.startsWith("!!shutdown")) {
+      client
+        .sendText(message.from, 'Ok, understood. Shutting down...')
+        .then((result) => {
+          logger.silly('Result: ', result); //return object success
+        })
+        .catch((erro) => {
+          logger.error('Error when sending: ', erro); //return object error
+        });
       client.close();
     }
-    // Here we are trying to catch TROLL requests //
+
     if (message.body.startsWith("?troll")) {
+    // Here we are trying to catch TROLL requests //
       regexp_match = message.body.match(/^[?]troll (\d+)$/)
+      logger.debug(`Command OK (${message})`)
+
       if (regexp_match) {
-  
         troll_id = parseInt(regexp_match[1], 10)
-        logger.debug("RegExp found: "+troll_id);
+        logger.debug(`[${troll_id}] RegExp OK`)
         var req = https.request({
           'method': 'POST',
           'hostname': 'www.sciz.fr',
