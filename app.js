@@ -39,8 +39,8 @@ venom
 
 function start(client) {
   client.onMessage((message) => {
-    // Here is it a watchdog to properly close the client remotely //
     if (message.body.startsWith("!!shutdown")) {
+      // Here is it a watchdog to properly close the client remotely //
       client
         .sendText(message.from, 'Ok, understood. Shutting down...')
         .then((result) => {
@@ -50,9 +50,7 @@ function start(client) {
           logger.error('Error when sending: ', erro); //return object error
         });
       client.close();
-    }
-    // Here we are trying to catch TROLL requests //
-    if (message.body.startsWith("?troll")) {
+    } else if (message.body.startsWith("?troll")) {
       // Here we are trying to catch TROLL requests //
       regexp_match = message.body.match(/^[?]troll (\d+)$/)
       logger.debug(`Command OK (${message})`)
@@ -254,7 +252,7 @@ function start(client) {
       logger.warn('RegEx KO - Monster ID not found');
       }
     } else {
-      logger.warn('RegEx KO - Command unknown');
+      // We do nothing, it is a "regular" message
     }
   });
 }
