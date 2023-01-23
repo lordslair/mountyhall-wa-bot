@@ -46,3 +46,8 @@ spec:
             secretKeyRef:
               name: mh-wa-bot
               key: SCIZ_TOKEN
+        - name: LOG_LEVEL
+          valueFrom:
+            secretKeyRef:
+              name: mh-wa-bot
+              key: LOG_LEVEL
