@@ -132,6 +132,8 @@ dist
 #
 # Customized ignores
 #
+# VS code settings
+.vscode
 # Stores Venom WA issued tokens
 tokens/
 # Ignored files (Production specific)
