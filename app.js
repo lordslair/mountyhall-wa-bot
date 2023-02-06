@@ -251,6 +251,60 @@ function start(client) {
       else {
       logger.warn('RegEx KO - Monster ID not found');
       }
+    } else if (message.body.startsWith("?team")) {
+      // Here we are trying to catch TEAM requests //
+      logger.debug(`Command OK (${message.body})`)
+
+      // We have to loop over trolls in Coterie to build content //
+      var req = https.request({
+        'method': 'POST',
+        'hostname': 'www.sciz.fr',
+        'path': '/api/hook/trolls',
+        'headers': {
+          'Authorization': SCIZ_TOKEN
+        },
+        'maxRedirects': 20
+      }, function (res) {
+        var chunks = [];
+    
+        res.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+    
+        res.on("end", function (chunk) {
+          var body = Buffer.concat(chunks);
+          team_data = `*[TEAM] Informations*:\n`
+          try {
+            let json = JSON.parse(body);
+            for(var troll in json.trolls) {
+                pv_data = `${json.trolls[troll].pdv}/${json.trolls[troll].pdv_max || '...'}`
+                pv_data = pv_data.padStart(7, " ");
+                team_data = team_data +
+                  '```' +
+                  `${json.trolls[troll].id}: ` +
+                  `${pv_data}PV ` +
+                  `@(${json.trolls[troll].dla.slice(0, -3)})` + 
+                  '```\n';
+            }
+          } catch (error) {
+            logger.error(error.message);
+          };
+          logger.info(team_data)
+          client
+            .sendText(message.from, team_data)
+            .then((result) => {
+              logger.silly('Result: ', result); //return object success
+            })
+            .catch((erro) => {
+              logger.error('Error when sending: ', erro); //return object error
+            });
+        });
+    
+        res.on("error", function (error) {
+          logger.error(error);
+        });
+      });
+      req.end();
     } else {
       // We do nothing, it is a "regular" message
     }
