@@ -1,5 +1,5 @@
 # Build Stage 1
-FROM node:19-bullseye-slim AS BASEIMAGE
+FROM node:20-bullseye-slim AS BASEIMAGE
 
 WORKDIR /src
 COPY package*.json ./
@@ -7,7 +7,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Build Stage 2
-FROM node:19-bullseye-slim
+FROM node:20-bullseye-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
