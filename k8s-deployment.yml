@@ -40,6 +40,13 @@ spec:
       containers:
       - name: mh-wa-bot
         image: lordslair/mh-wa-bot:latest
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 1000m
+          requests:
+            memory: 124Mi
+            cpu: 500m
         env:
         - name: SCIZ_TOKEN
           valueFrom:
@@ -51,3 +58,5 @@ spec:
             secretKeyRef:
               name: mh-wa-bot
               key: LOG_LEVEL
+        - name: TZ
+          value: 'Europe/Paris'
