@@ -2,8 +2,10 @@
 FROM node:20-bullseye-slim AS BASEIMAGE
 
 WORKDIR /src
-COPY package*.json ./
-RUN npm ci --only=production
+
+ENV PUPPETEER_CACHE_DIR=/tmp/browser
+COPY package.json ./
+RUN npm install
 COPY . .
 
 # Build Stage 2
@@ -28,10 +30,11 @@ RUN mkdir -p /home/node/app \
     && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
-ENV TZ=Europe/Paris
+
+ENV PUPPETEER_CACHE_DIR=./browser
 COPY --chown=node:node app.js           ./
-COPY --chown=node:node package*.json    ./
 COPY --from=BASEIMAGE --chown=node:node /src/node_modules ./node_modules
+COPY --from=BASEIMAGE --chown=node:node /tmp/browser      ./browser
 
 USER node
 
