@@ -27,10 +27,15 @@ else {
 
 venom
   .create({
-    session: 'session-master', //name of session
-    browserArgs: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox'],
-    multidevice: true, // for version not multidevice use false.(default: true)
+    browserArgs: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-setuid-sandbox',
+    ],
     disableSpins: true, // Will disable Spinnies animation, useful for containers (docker)
+    headless: 'new', // you should no longer use boolean false or true, now use false, true or 'new'
+    multidevice: true, // for version not multidevice use false.(default: true)
+    session: 'session-master', //name of session
   })
   .then((client) => start(client))
   .catch((erro) => {
