@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "venom-bot": "^5.0.1",
+    "venom-bot": "^5.0.14",
     "winston": "^3.9.0"
   },
   "name": "mountyhall-wa-bot",
