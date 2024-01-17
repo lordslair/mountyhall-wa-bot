@@ -6,3 +6,4 @@ services:
     environment:
       LOG_LEVEL: 'info'
       SCIZ_TOKEN: '<SCIZ_TOKEN>'
+      TZ: 'Europe/Paris'
