@@ -37,6 +37,10 @@ spec:
     spec:
       restartPolicy: Always
 
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+
       containers:
       - name: mh-wa-bot
         image: lordslair/mh-wa-bot:latest
