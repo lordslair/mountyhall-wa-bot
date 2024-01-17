@@ -4,8 +4,7 @@ FROM node:20-bullseye-slim AS BASEIMAGE
 WORKDIR /src
 
 ENV PUPPETEER_CACHE_DIR=/tmp/browser
-COPY package.json ./
-RUN npm install
+RUN npm i --save venom-bot winston
 COPY . .
 
 # Build Stage 2
@@ -31,7 +30,8 @@ RUN mkdir -p /home/node/app \
 
 WORKDIR /home/node/app
 
-ENV PUPPETEER_CACHE_DIR=./browser
+ENV PUPPETEER_CACHE_DIR=/tmp/browser
+ENV PUPPETEER_DOWNLOAD_PATH=/home/node/app/browser
 COPY --chown=node:node app.js           ./
 COPY --from=BASEIMAGE --chown=node:node /src/node_modules ./node_modules
 COPY --from=BASEIMAGE --chown=node:node /tmp/browser      ./browser
