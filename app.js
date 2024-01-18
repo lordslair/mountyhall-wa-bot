@@ -210,7 +210,7 @@ function start(client) {
                   let month = ("0" + (dt.getMonth() + 1)).slice(-2);
                   // get time
                   let time = `${dt.getHours()}:${dt.getMinutes()}`;
-                  PV_DATA = PV_DATA + ` (${mob.bless}% @${date}/${month} ${time})`
+                  PV_DATA = PV_DATA + ` (${mob.bless}% @${date}/${month} ${time}) [#${mob.nCdM}]`
                 }
                 // Armure
                 ARM_DATA_P = `${mob.armP.min2 || mob.armP.min || 1}-${mob.armP.max2 || mob.armP.max}`
