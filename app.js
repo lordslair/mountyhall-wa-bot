@@ -196,9 +196,13 @@ function start(client) {
                 }
                 // PV
                 if (mob.pv.min2) {
-                  PV_DATA = `${mob.pv.min2}-${mob.pv.max2} PV`
+                  PV_DATA = `${mob.pv.min2}-${mob.pv.max2}`
                 } else {
-                  PV_DATA = `${mob.pv.min}-${mob.pv.max} PV`
+                  if (mob.pv.max) {
+                    PV_DATA = `${mob.pv.min}-${mob.pv.max}`
+                  } else {
+                    PV_DATA = `${mob.pv.min}+`
+                  }
                 }
                 // Date blessure
                 if (mob.bless && mob.timegmt) {
@@ -213,9 +217,18 @@ function start(client) {
                   PV_DATA = PV_DATA + ` (${mob.bless}% @${date}/${month} ${time}) [#${mob.nCdM}]`
                 }
                 // Armure
-                ARM_DATA_P = `${mob.armP.min2 || mob.armP.min || 1}-${mob.armP.max2 || mob.armP.max}`
-                ARM_DATA_M = `${mob.armM.min2 || mob.armM.min || 1}-${mob.armM.max2 || mob.armM.max}`
-                ARM_DATA = `(P): ${ARM_DATA_P} | (M): ${ARM_DATA_M}`
+                if (mob.arm) {
+                  // CdM exists but is CdM1, so no armM & armP
+                  if (mob.arm.max) {
+                    ARM_DATA = `(G): ${mob.arm.min || 1}-${mob.arm.max}`
+                  } else {
+                    ARM_DATA = `(G): ${mob.arm.min || 1}+`
+                  }
+                } else {
+                  ARM_DATA_P = `${mob.armP.min2 || mob.armP.min || 1}-${mob.armP.max2 || mob.armP.max}`
+                  ARM_DATA_M = `${mob.armM.min2 || mob.armM.min || 1}-${mob.armM.max2 || mob.armM.max}`
+                  ARM_DATA = `(P): ${ARM_DATA_P} | (M): ${ARM_DATA_M}`
+                }
                 // Esquive 
                 ESQ_DATA = `${mob.esq.min2 || mob.esq.min || 1}-${mob.esq.max2 || mob.esq.max}D6`
                 // Header
