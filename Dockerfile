@@ -1,5 +1,5 @@
 # Build Stage 1
-FROM node:20-bullseye-slim AS BASEIMAGE
+FROM node:22-bullseye-slim AS BASEIMAGE
 
 WORKDIR /src
 
@@ -8,7 +8,7 @@ RUN npm i --save venom-bot winston
 COPY . .
 
 # Build Stage 2
-FROM node:20-bullseye-slim
+FROM node:22-bullseye-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
