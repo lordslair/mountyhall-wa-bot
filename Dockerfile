@@ -5,8 +5,12 @@ WORKDIR /src
 
 ENV PUPPETEER_CACHE_DIR=/tmp/browser
 
+# Copy package.json and package-lock.json for reproducible builds
+COPY package*.json ./
 # Install dependencies
-RUN npm install --save venom-bot winston
+RUN npm install --production && \
+    npm install --save venom-bot winston
+
 COPY . .
 
 # Build Stage 2
