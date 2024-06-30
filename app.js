@@ -44,16 +44,18 @@ venom
 
 function start(client) {
   client.onMessage((message) => {
+    logger.silly(`<ALL> Received: (${message.body})`)
+
     if (message.body.startsWith("!!shutdown")) {
-      logger.debug(`Command OK (${message.body})`)
+      logger.debug(`<!!shutdown> Command OK (${message.body})`)
       // Here is it a watchdog to properly close the client remotely //
       client
         .sendText(message.from, 'Ok, understood. Shutting down...')
         .then((result) => {
-          logger.silly('Result: ', result); //return object success
+          logger.debug('<!!shutdown> Message sent');
         })
         .catch((erro) => {
-          logger.error('Error when sending: ', erro); //return object error
+          logger.error('<!!shutdown> Error when sending: ', erro); //return object error
         })
         .finally(()=> {
           client.close();
@@ -61,11 +63,11 @@ function start(client) {
     } else if (message.body.startsWith("?troll")) {
       // Here we are trying to catch TROLL requests //
       regexp_match = message.body.match(/^[?]troll (\d+)$/)
-      logger.debug(`Command OK (${message})`)
+      logger.debug(`<?troll> Command OK (${message})`)
 
       if (regexp_match) {
         troll_id = parseInt(regexp_match[1], 10)
-        logger.debug(`[${troll_id}] RegExp OK`)
+        logger.debug(`<?troll> [${troll_id}] RegExp OK`)
         var req = https.request({
           'method': 'POST',
           'hostname': 'www.sciz.fr',
@@ -85,27 +87,32 @@ function start(client) {
             var body = Buffer.concat(chunks);
             try {
                   let json = JSON.parse(body);
+                  logger.silly("<?troll> JSON found: "+json);
+                  // do something with JSON
                   for(var troll in json.trolls){
                     if (json.trolls[troll].id === troll_id) {
                       troll_header = `[${json.trolls[troll].id}] ${json.trolls[troll].nom}`
-                      logger.debug("JSON found: "+troll_header);
+                      logger.debug("<?troll> Tröll found: "+troll_header);
                       troll_data = `*${troll_header}*\n` +
                       `*PVs*: ${json.trolls[troll].pdv}/${json.trolls[troll].pdv_max}\n` +
                       `*DLA*: ${json.trolls[troll].dla}\n` +
                       `*POS*: X=${json.trolls[troll].pos_x} | Y=${json.trolls[troll].pos_y} | N=${json.trolls[troll].pos_n}`;
 
+                      logger.info("<?troll> DATA: \n"+troll_data)
+
                       client
                         .sendText(message.from, troll_data)
                         .then((result) => {
-                          logger.silly('Result: ', result); //return object success
+                          logger.debug('<?troll> Message sent');
                         })
                         .catch((erro) => {
-                          logger.error('Error when sending: ', erro); //return object error
+                          logger.error('<?troll> Error when sending: ', erro); //return object error
                         });
                     }
+                    else {
+                      logger.silly(`<?troll> No match ${json.trolls[troll].id} === ${troll_id}`);
+                    }
                   }
-                  logger.silly(json)
-                  // do something with JSON
               } catch (error) {
                 logger.error(error.message);
               };
@@ -118,16 +125,16 @@ function start(client) {
         req.end();
       }
       else {
-        logger.warn('RegEx KO');
+        logger.warn('<?troll> RegEx KO');
       }
     } else if (message.body.startsWith("?mob")) {
       // Here we are trying to catch MONSTERS requests //
       regexp_match = message.body.match(/^[?]mob (\d+)$/)
-      logger.debug(`Command OK (${message.body})`)
+      logger.debug(`<?mob> Command OK (${message.body})`)
 
       if (regexp_match) {
         mob_id = parseInt(regexp_match[1], 10)
-        logger.debug(`[${mob_id}] RegExp OK`)
+        logger.debug(`<?mob> [${mob_id}] RegExp OK`)
         // we need a MH call first to have the NAME of the mob
         var req = https.request({
           'method': 'GET',
@@ -140,7 +147,7 @@ function start(client) {
             arr = data.split("\n")
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].includes(mob_id) && arr[i].includes('mh_monstres')) {
-                logger.silly(arr[i])
+                logger.silly("<?mob> "+arr[i])
                 // We grabbed a line with the mob_id inside
                 // Let's see if we can grab his name
                 regexp_mob_name = arr[i].match(/class="mh_monstres">un[e]? ([-'A-Za-zÀ-ÿ\s]*) \[([A-Za-zÀ-ÿ]*)\]/)
@@ -153,10 +160,10 @@ function start(client) {
             }
 
             if (mob_name && mob_age) {
-              logger.debug(`[${mob_id}] RegExp OK: ${mob_name} [${mob_age}]`)
+              logger.debug(`<?mob> [${mob_id}] RegExp OK: ${mob_name} [${mob_age}]`)
             }
             else {
-              message = `[${mob_id}] RegExp KO: Unable to grab name & age`
+              message = `<?mob> [${mob_id}] RegExp KO: Unable to grab name & age`
               // CdM was not found in events, we answer nicely
               logger.warn(message)
               mob_data = message
@@ -186,7 +193,7 @@ function start(client) {
                 let json = JSON.parse(body);
                 
                 mob = json[0]
-                logger.silly(mob)
+                logger.silly("<?mob> CdM from MZ: "+mob)
                 
                 // Level
                 if (mob.niv.min == mob.niv.max) {
@@ -238,15 +245,16 @@ function start(client) {
                 `*PVs*: ${PV_DATA}\n` +
                 `*ARM*: ${ARM_DATA}\n` +
                 `*ESQ*: ${ESQ_DATA}`;
-                logger.debug(mob_data)
+
+                logger.info("<?mob> DATA: \n"+mob_data)
 
                 client
                   .sendText(message.from, mob_data)
                   .then((result) => {
-                    logger.silly('Result: ', result); //return object success
+                    logger.debug('<?mob> Message sent');
                   })
                   .catch((erro) => {
-                    logger.error('Error when sending: ', erro); //return object error
+                    logger.error('<?mob> Error when sending: ', erro); //return object error
                   });
               });
             
@@ -270,11 +278,11 @@ function start(client) {
         req.end();
       }
       else {
-      logger.warn('RegEx KO - Monster ID not found');
+      logger.warn('<?mob> RegEx KO - Monster ID not found');
       }
     } else if (message.body.startsWith("?team")) {
       // Here we are trying to catch TEAM requests //
-      logger.debug(`Command OK (${message.body})`)
+      logger.debug(`<?team> Command OK (${message.body})`)
 
       // We have to loop over trolls in Coterie to build content //
       var req = https.request({
@@ -310,14 +318,16 @@ function start(client) {
           } catch (error) {
             logger.error(error.message);
           };
-          logger.info(team_data)
+
+          logger.info("<?team> DATA: \n"+team_data)
+
           client
             .sendText(message.from, team_data)
             .then((result) => {
-              logger.silly('Result: ', result); //return object success
+              logger.debug('<?team> Message sent');
             })
             .catch((erro) => {
-              logger.error('Error when sending: ', erro); //return object error
+              logger.error('<?team> Error when sending: ', erro); //return object error
             });
         });
     
