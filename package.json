@@ -1,6 +1,5 @@
 {
-    "dependencies": {
-      "venom-bot": "^5.1.0",
-      "winston": "^3.13.0"
-    }
+  "dependencies": {
+    "@wppconnect-team/wppconnect": "^1.32.3"
   }
+}

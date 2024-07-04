@@ -6,31 +6,24 @@ WORKDIR /src
 ENV PUPPETEER_CACHE_DIR=/tmp/browser
 
 # Copy package.json and package-lock.json for reproducible builds
-COPY package*.json ./
+COPY package.json ./
 # Install dependencies
-RUN npm install --production && \
-    npm install --save venom-bot winston
+RUN npm install --omit=dev
 
 COPY . .
 
 # Build Stage 2
 FROM node:20-bullseye-slim
 
+# Copy only requirements to leverage Docker cache
+COPY --chown=node:node requirements.apt /tmp/requirements.apt
+
 # Install required packages
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libgtk-3-0 \
-        libnotify-dev \
-        libgconf-2-4 \
-        libnss3 \
-        libxss1 \
-        libasound2 \
-        libxtst6 \
-        xauth \
-        xvfb \
-        libgbm-dev \
+    && sed 's/#.*//' /tmp/requirements.apt | xargs apt-get install -y --no-install-recommends \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /tmp/requirements.apt
 
 # Create and set permissions for the application directory
 RUN mkdir -p /home/node/app \
@@ -39,15 +32,15 @@ RUN mkdir -p /home/node/app \
 WORKDIR /home/node/app
 
 # Environment variables
-ENV PUPPETEER_CACHE_DIR=/tmp/browser
+ENV PUPPETEER_CACHE_DIR=/home/node/app/browser
 ENV PUPPETEER_DOWNLOAD_PATH=/home/node/app/browser
 
 # Copy necessary files
-COPY                  --chown=node:node app.js            ./
+COPY                  --chown=node:node index.js          ./
 COPY --from=BASEIMAGE --chown=node:node /src/node_modules ./node_modules
 COPY --from=BASEIMAGE --chown=node:node /tmp/browser      ./browser
 
 USER node
 
 # Start the application
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]

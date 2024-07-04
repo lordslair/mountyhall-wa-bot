@@ -1,0 +1,12 @@
+# Use this with :
+# sed 's/#.*//' requirements.apt | xargs apt-get install
+#
+# Chrome dependencies
+libgtk-3-0
+libnotify4
+libnss3
+libasound2
+libxtst6
+libxau6
+libxv1
+libgbm1
