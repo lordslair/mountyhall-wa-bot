@@ -1,5 +1,5 @@
 # Build Stage 1
-FROM node:20-bullseye-slim AS BASEIMAGE
+FROM node:23-bullseye-slim AS BASEIMAGE
 
 WORKDIR /src
 
@@ -13,7 +13,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Build Stage 2
-FROM node:20-bullseye-slim
+FROM node:23-bullseye-slim
 
 # Copy only requirements to leverage Docker cache
 COPY --chown=node:node requirements.apt /tmp/requirements.apt
