@@ -25,7 +25,7 @@ ENV PUPPETEER_DOWNLOAD_PATH=/home/node/browser
 
 # Copy installed node_modules and app only
 COPY --chown=node:node requirements.apt     ./
-COPY --chown=node:node index.js             ./
+COPY --chown=node:node src                  ./
 COPY --from=build /home/node/browser        ./browser
 COPY --from=build /home/node/node_modules   ./node_modules
 
