@@ -134,9 +134,11 @@ dist
 #
 # VS code settings
 .vscode
-# Stores Venom WA issued tokens
+# Stores Venom/WPPconnect WA issued tokens
 tokens/
 # Ignored files (Production specific)
 *.production.yml
+*.production.env
 # Ignored files (Development specific)
 *.development.yml
+*.development.env
