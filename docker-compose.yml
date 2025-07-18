@@ -2,8 +2,10 @@ services:
   mh-wa-bot:
     build: .
     container_name: mh-wa-bot
-    image: mh-wa-bot
     environment:
-      LOG_LEVEL: 'info'
-      SCIZ_TOKEN: '<SCIZ_TOKEN>'
-      TZ: 'Europe/Paris'
+      LOG_LEVEL: ${LOG_LEVEL:-silly}
+      SCIZ_TOKEN: ${SCIZ_TOKEN}
+      TZ: ${TZ:-Europe/Paris}
+    image: lordslair/mh-wa-bot
+    volumes:
+      - ${LOCAL_TOKEN_PATH}:/home/node/tokens
