@@ -24,11 +24,18 @@ module.exports = {
         try {
           const body = Buffer.concat(chunks);
           let json = JSON.parse(body);
+          // Header stays outside the code block
           let teamData = `*[TEAM] Informations*:\n`;
-          for (const troll of json.trolls) {
-            let pv = `${troll.pdv}/${troll.pdv_max || '...'}`.padStart(7, " ");
-            teamData = teamData + '```' + `${troll.id}: ${pv}PV @(${troll.dla.slice(0, -3)})` + '```\n';
-          }
+
+          // Build lines without triple backticks
+          const lines = json.trolls.map(troll => {
+            const pdv = troll.pdv.toString().padStart(3, ' ');
+            return `${troll.id}: ${pdv}PV (${troll.dla.slice(0, -3)}|${troll.pa}PA)`;
+          });
+
+          // Wrap all lines in a single code block
+          teamData += '```' + lines.join('\n') + '```'
+
           logger.info("<?team> DATA:\n" + teamData);
           client.reply(msg.from, teamData, msg.id.toString())
             .then(() => logger.debug('<?team> Message sent'))

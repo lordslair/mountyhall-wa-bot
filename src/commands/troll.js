@@ -34,12 +34,13 @@ module.exports = {
           let json = JSON.parse(body);
           for (const troll of json.trolls) {
             if (troll.id === troll_id) {
+              logger.debug(`[?troll] troll object:\n${JSON.stringify(troll, null, 2)}`);
               let trollHeader = `[${troll.id}] ${troll.nom}`;
               logger.debug(`<?troll> Tröll found: ${trollHeader}`);
               let trollData = `*${trollHeader}*\n` +
-                `*PVs*: ${troll.pdv}/${troll.pdv_max}\n` +
-                `*DLA*: ${troll.dla}\n` +
-                `*POS*: X=${troll.pos_x} | Y=${troll.pos_y} | N=${troll.pos_n}`;
+                `*PVs*: ` + '```' + `${troll.pdv}/${troll.pdv_max}` + '```\n' + 
+                `*DLA*: ` + '```' + `${troll.dla} (${troll.pa}PA)` + '```\n' + 
+                `*POS*: ` + '```' + `X=${troll.pos_x} | Y=${troll.pos_y} | N=${troll.pos_n}` + '```';
               logger.info("<?troll> DATA:\n" + trollData);
               client.reply(msg.from, trollData, msg.id.toString())
                 .then(() => logger.debug('<?troll> Message sent'))

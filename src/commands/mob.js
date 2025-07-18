@@ -73,15 +73,15 @@ module.exports = {
               const mob = json[0];
 
               // Prepare response
-              const lvl = mob.niv.min === mob.niv.max ? mob.niv.min : `${mob.niv.min}-${mob.niv.max}`;
+              const lvl = mob.niv.min === mob.niv.max ? mob.niv.min : `${mob.niv.min}<>${mob.niv.max}`;
 
               let pv = mob.pv?.min;
               let pvMax = mob.pv?.max;
               let pvMin2 = mob.pv?.min2;
               let pvMax2 = mob.pv?.max2;
 
-              let pvData = pvMin2 ? `${pvMin2}-${pvMax2}` :
-                           (pvMax ? `${pv}-${pvMax}` : `${pv}+`);
+              let pvData = pvMin2 ? `${pvMin2}<>${pvMax2}` :
+                           (pvMax ? `${pv}<>${pvMax}` : `${pv}+`);
 
               if (mob.bless && mob.timegmt) {
                 const dt = new Date((mob.timegmt + 3600) * 1000);
@@ -93,13 +93,13 @@ module.exports = {
               let armData;
               if (mob.armP && mob.armM) {
               // Use per-type armor if both present
-              const armP = `${mob.armP.min2 || mob.armP.min || 1}-${mob.armP.max2 || mob.armP.max}`;
-              const armM = `${mob.armM.min2 || mob.armM.min || 1}-${mob.armM.max2 || mob.armM.max}`;
+              const armP = `${mob.armP.min2 || mob.armP.min || 1}<>${mob.armP.max2 || mob.armP.max}`;
+              const armM = `${mob.armM.min2 || mob.armM.min || 1}<>${mob.armM.max2 || mob.armM.max}`;
               armData = `(P): ${armP} | (M): ${armM}`;
               } else if (mob.arm) {
               // Fallback to generic armor
               if (mob.arm.max) {
-                  armData = `(G): ${mob.arm.min || 1}-${mob.arm.max}`;
+                  armData = `(G): ${mob.arm.min || 1}<>${mob.arm.max}`;
               } else {
                   armData = `(G): ${mob.arm.min || 1}+`;
               }
@@ -107,15 +107,15 @@ module.exports = {
               armData = 'No armor data';
               }
 
-              const esqData = `${mob.esq.min2 || mob.esq.min || 1}-${mob.esq.max2 || mob.esq.max}D6`;
+              const esqData = `${mob.esq.min2 || mob.esq.min || 1}<>${mob.esq.max2 || mob.esq.max}D6`;
               const nbr = (mob.Mode === 'stat') ? mob.nCdM : null;
               //const header = `[${mob_id}] ${mob_name} [${mob_age}] (${lvl})` + (nbr ? ` {${nbr}}` : '');
               const header = `${mob_name} (${lvl})` + (nbr ? ` {${nbr}}` : '');
 
               const text = `*${header}*\n` +
-                           `*PVs*: ${pvData}\n` +
-                           `*ARM*: ${armData}\n` +
-                           `*ESQ*: ${esqData}`;
+                           '*PVs*: ' + '```' + pvData + '```\n' +
+                           '*ARM*: ' + '```' + armData + '```\n' +
+                           '*ESQ*: ' + '```' + esqData + '```';
 
               logger.info(`[?mob] Reply data:\n${text}`);
 
