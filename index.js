@@ -24,8 +24,10 @@ const logger = winston.createLogger({
     process.exit(1) 
   }
 
+const session_name = 'mhSession'
+
 wppconnect.create({
-    session: 'sessionName', //Pass the name of the client you want to start the bot
+    session: session_name, //Pass the name of the client you want to start the bot
     catchQR: (asciiQR, attempts) => {
       console.log('Number of attempts to read the qrcode: ', attempts);
     },
@@ -42,14 +44,21 @@ wppconnect.create({
     useChrome: true, // If false will use Chromium instance
     debug: false, // Opens a debug session
     logQR: true, // Logs QR automatically in terminal
-    browserWS: '', // If you want to use browserWSEndpoint
-    browserArgs: [''], // Parameters to be added into the Chrome browser instance
-    puppeteerOptions: {}, // Will be passed to puppeteer.launch
+    browserArgs: [
+      '--disable-setuid-sandbox',
+      '--no-sandbox',
+      '--safebrowsing-disable-auto-update',
+      '--disable-features=LeakyPeeker' // Disable the browser's sleep mode when idle, preventing the browser from going into sleep mode, this is useful for WhatsApp not to be in economy mode in the background, avoiding possible crashes
+    ], // Parameters to be added into the Chrome browser instance
+    puppeteerOptions: {
+      userDataDir: `${__dirname}/tokens/${session_name}`,
+      args: ['--no-sandbox', '--disable-gpu', '--disable-setuid-sandbox'],
+    }, // Will be passed to puppeteer.launch
     disableWelcome: false, // Option to disable the welcoming message which appears in the beginning
     updatesLog: true, // Logs info updates automatically in terminal
     autoClose: 60000, // Automatically closes the wppconnect only when scanning the QR code (default 60 seconds, if you want to turn it off, assign 0 or false)
     tokenStore: 'file', // Define how to work with tokens, which can be a custom interface
-    folderNameToken: './tokens', //folder name when saving tokens
+    folderNameToken: `${__dirname}/tokens`, //folder name when saving tokens
    })
   .then((client) => start(client))
   .catch((error) => console.log(error));
