@@ -9,3 +9,4 @@ services:
     image: lordslair/mh-wa-bot
     volumes:
       - ${LOCAL_TOKEN_PATH}:/home/node/tokens
+    restart: unless-stopped
