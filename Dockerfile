@@ -1,5 +1,5 @@
 # ----- Build Stage -----
-FROM node:24-bookworm-slim AS build
+FROM node:25-bookworm-slim AS build
 
 # Environment variables
 ENV PUPPETEER_CACHE_DIR=/home/node/browser
@@ -15,7 +15,7 @@ USER node
 RUN npm install --omit=dev
 
 # ----- Production Stage -----
-FROM node:24-bookworm-slim
+FROM node:25-bookworm-slim
 
 WORKDIR /home/node
 
